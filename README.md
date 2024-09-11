@@ -3,7 +3,10 @@ Minecraft-Like Game
 Overview
 This is a custom-developed Minecraft-like game designed for players to explore, build, and create in an open-world environment. The game features familiar block-based mechanics, allowing players to interact with various elements in the game world, gather resources, and construct unique structures.
 
-Features
+
+![car-racing-2d](https://github.com/user-attachments/assets/9233f278-215a-4722-affb-cf962111bc0e)
+
+
 Block-Based Building: Players can place and remove blocks in the world to build structures.
 Open World Exploration: Explore procedurally generated terrain, including forests, mountains, and more.
 Resource Gathering: Collect materials to craft items and build your creations.

@@ -1,0 +1,107 @@
+options:
+  msg:&6｜&aEconomy&6｜#안내메세지
+  currency:&6원 #화폐단위
+
+on load:
+  send "{@msg}로드 완료" to console
+
+on first join:
+  set {돈::%player's uuid%} to 0
+on join:
+  {돈::%player's uuid%} is not set:
+    set {돈::%player's uuid%} to 0
+
+command /돈:
+  trigger:
+    send ""
+    send "{@msg}&f&l%player%&e님의 현재 소지금은 &f&l%{돈::%player's uuid%}%{@currency} &e입니다."
+    send ""
+
+command /돈보내기 [<player>] [<number>]:
+  trigger:
+#전체 미입력
+    arg 1 is not set:
+      send ""
+      send "{@msg}&c명령어는 다음과 같이 사용 가능합니다."
+      send "{@msg}&e/돈보내기 [접속중인 유저] [금액]"
+      send ""
+      stop
+#본인 감지
+    arg 1 is player:
+      send ""
+      send "{@msg}&c본인에게는 송금할 수 없습니다."
+      send ""
+      stop
+#금액 미입력
+    arg 2 is not set:
+      send ""
+      send "{@msg}&c송금할 금액을 입력 해 주세요."
+      send ""
+      stop
+#정수 미입력
+    arg 2 is not a number:
+      send ""
+      send "{@msg}&c금액은 정수만 입력할 수 있습니다."
+      send ""
+      stop
+#양수 미입력
+    arg 2 < 1:
+      send ""
+      send "{@msg}&f&l1{@currency} &c미만의 금액은 송금할 수 없습니다."
+      send ""
+      stop
+#소지금 감지
+    arg 2 > {돈::%player's uuid%}:
+      send ""
+      send "{@msg}&c본인의 소지금보다 높은 금액은 송금할 수 없습니다."
+      send ""
+      stop
+#조건달성
+    add arg 2 to {돈::%arg 1's uuid%}
+    subtract arg 2 from {돈::%player's uuid%}
+    send ""
+    send "{@msg}&f&l%arg 1%&e님에게 &f&l%arg 2%{@currency} &e을 송금하였습니다."
+    send ""
+    send "" to arg 1
+    send "{@msg}&f&l%player%&e님에게 &f&l%arg 2%{@currency} &e을 송금받으셨습니다." to arg 1
+    send "" to arg 1
+
+command /수표100만 [<integer>]:
+	trigger:
+		if arg-1 is not set:
+			message "/수표100만 [갯수]" to player
+		else:
+			set {_amount} to arg-1
+			if {_amount} >= 1:
+				if {돈::%player's uuid%} >= 1000000 * {_amount}:
+					remove 1000000 * {_amount} from {돈::%player's uuid%}
+					loop {_amount} times:
+						give 1 of paper named "&e수표100만원" with lore "&c우클릭시 돈이 100만원 들어옵니다." to player
+					message "&c%{_amount}%&f장의 수표100만원을 만들었습니다" to player
+				else:
+					message "돈이 부족합니다" to player
+			else:
+				message "적어도 1장이상부터 뽑으실 수 있습니다" to player
+
+on rightclick with paper:
+    if player's tool's name contains "&e수표100만원":
+        cancel event
+        set {_p} to player
+        add 1000000 to {돈::%{_p}'s uuid%}
+        remove 1 of paper named "&e수표100만원" from {_p}
+        message "100만원을 획득하셨습니다" to {_p}
+
+command /돈추가 <player> [<integer>]:
+	permission: operator.set
+	permission message: {@msg}&4명령어를 사용할 권한이 없습니다.
+	trigger:
+		if arg-1 is not set:
+			message "플레이어를 선택해주세요" to player
+		else if arg-2 is not set:
+			message "금액을 작성해주세요" to player
+		else:
+			set {_target} to arg-1
+			set {_amount} to arg-2
+			add {_amount} to {돈::%{_target}'s uuid%}
+			message "%{_amount}%원이 %{_target}%에게 충전되었습니다" to player
+			message "당신의 계좌에 %{_amount}%원이 충전되었습니다" to {_target}

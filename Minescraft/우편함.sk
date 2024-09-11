@@ -1,0 +1,56 @@
+command /우편함:
+	trigger:
+		open chest with 6 rows named "&e&l%player%의 우편함" to player
+		wait 1 tick
+		set {_postinv} to 0
+		loop {post::%player's uuid%::*}:
+			set slot {_postinv} of current inventory of player to loop-value
+			add 1 to {_postinv}
+		set slot 49 of current inventory of player to lime stained glass pane named "&a&l모두 받기" with all flags hidden
+		
+command /우편보내기 [<offlineplayer>]:
+	permission: operator.set
+	permission message: {@msg}&4명령어를 사용할 권한이 없습니다.
+	trigger:
+		if arg 1 is not set:
+			send "&c우편을 보낼 플레이어의 이름을 적어주세요." to player
+		else:
+			if player's tool is air:
+				send "&c우편으로 보낼 아이템을 손에 들어주세요." to player
+			else:
+				add player's tool to {post::%uuid of arg 1%::*}
+				remove player's tool from player's tool
+				send "&a%arg 1%에게 우편을 보냈습니다." to player
+				send "&a%player%가 우편을 보냈습니다." to arg 1
+				
+on inventory click:
+	if name of current inventory of player is "&e&l%player%의 우편함":
+		cancel event
+		if name of clicked item is "&a&l모두 받기":
+			if {post::%player's uuid%::*} is not set:
+				stop
+			else:
+				if inventory of player have space for {post::%player's uuid%::*}:
+					give {post::%player's uuid%::*} to player
+					delete {post::%player's uuid%::*}
+					set {_inv} to 0
+					loop 45 times:
+						set slot {_inv} of current inventory of player to air
+						add 1 to {_inv}
+				else:
+					send "&c인벤토리가 부족합니다." to player
+		set {_post} to 0
+		set {_postnum} to 1
+		loop 45 times:
+			if event-inventory is open inventory:
+				if clicked slot is {_post}:
+					give clicked slot to player
+					remove clicked slot from {post::%player's uuid%::*}
+					set slot {_post} of current inventory of player to air
+				add 1 to {_post}
+				add 1 to {_postnum}
+				
+		
+		
+
+			

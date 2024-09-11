@@ -27,12 +27,3 @@ AI Enemies: Introducing NPCs and enemies to increase gameplay difficulty.
 Multiplayer Expansion: Full multiplayer support with additional gameplay modes.
 Installation
 To install and play the game, follow these steps:
-
-Clone the repository:
-bash
-Copy code
-git clone https://github.com/your-username/minecraft-like-game.git
-Open the project in your preferred IDE or game engine.
-Build the project and run the game.
-Contribution
-Feel free to contribute to this project by submitting pull requests or reporting issues. Suggestions and new ideas are welcome!
